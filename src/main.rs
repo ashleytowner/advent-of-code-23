@@ -1,6 +1,25 @@
 use std::env;
 use std::fs::read_to_string;
 
+#[macro_export]
+macro_rules! word_to_num {
+    ( $x:expr ) => {
+        match $x {
+            "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" => $x,
+            "one" => "1",
+            "two" => "2",
+            "three" => "3",
+            "four" => "4",
+            "five" => "5",
+            "six" => "6",
+            "seven" => "7",
+            "eight" => "8",
+            "nine" => "9",
+            _ => "",
+        }
+    }
+}
+
 fn read_lines(filename: &str) -> Vec<String> {
     let mut result = Vec::new();
 
@@ -25,24 +44,11 @@ fn first_challenge(filename: &str) {
         ];
 
         for num in nums {
-            let val = match num {
-                "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" => num,
-                "one" => "1",
-                "two" => "2",
-                "three" => "3",
-                "four" => "4",
-                "five" => "5",
-                "six" => "6",
-                "seven" => "7",
-                "eight" => "8",
-                "nine" => "9",
-                _ => "",
-            };
             match line.find(num) {
                 Some(x) => {
                     if x <= first_index {
                         first_index = x;
-                        first = Some(val);
+                        first = Some(word_to_num!(num));
                     }
                 }
                 None => {}
@@ -51,7 +57,7 @@ fn first_challenge(filename: &str) {
                 Some(x) => {
                     if x >= last_index {
                         last_index = x;
-                        last = Some(val);
+                        last = Some(word_to_num!(num));
                     }
                 }
                 None => {}
@@ -68,7 +74,6 @@ fn first_challenge(filename: &str) {
             }
             None => panic!("No Last Num"),
         }
-        print!("{} => {}\n", line, whole_num);
         let value = whole_num.parse::<i32>().unwrap();
         total += value;
     }
@@ -76,6 +81,8 @@ fn first_challenge(filename: &str) {
 }
 
 fn main() {
+    let x = word_to_num!("three");
+    print!("{}\n", x);
     let args: Vec<String> = env::args().collect();
     if args.len() > 2 {
         let challenge = &args[1];
