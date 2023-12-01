@@ -15,31 +15,60 @@ fn first_challenge(filename: &str) {
     let lines = read_lines(filename);
     let mut total = 0;
     for line in lines {
-        let mut first: Option<char> = None;
-        let mut last: Option<char> = None;
-        let mut got_first: bool = false;
-        for c in line.chars() {
-            match c {
-                '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
-                    if !got_first {
-                        first = Some(c);
-                        got_first = true;
+        let mut first: Option<&str> = None;
+        let mut first_index = usize::MAX;
+        let mut last: Option<&str> = None;
+        let mut last_index: usize = 0;
+        let nums = vec![
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four",
+            "five", "six", "seven", "eight", "nine",
+        ];
+
+        for num in nums {
+            let val = match num {
+                "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" => num,
+                "one" => "1",
+                "two" => "2",
+                "three" => "3",
+                "four" => "4",
+                "five" => "5",
+                "six" => "6",
+                "seven" => "7",
+                "eight" => "8",
+                "nine" => "9",
+                _ => "",
+            };
+            match line.find(num) {
+                Some(x) => {
+                    if x <= first_index {
+                        first_index = x;
+                        first = Some(val);
                     }
-                    last = Some(c);
                 }
-                _ => {}
+                None => {}
+            }
+            match line.rfind(num) {
+                Some(x) => {
+                    if x >= last_index {
+                        last_index = x;
+                        last = Some(val);
+                    }
+                }
+                None => {}
             }
         }
+
         let mut whole_num = match first {
             Some(x) => x.to_string().to_owned(),
-            None => panic!()
+            None => panic!("No First Num"),
         };
         match last {
             Some(x) => {
                 whole_num.push_str(&x.to_string());
-            },
-            None => panic!()
+            }
+            None => panic!("No Last Num"),
         }
+        print!("{} => {}\n", line, whole_num);
         let value = whole_num.parse::<i32>().unwrap();
         total += value;
     }
