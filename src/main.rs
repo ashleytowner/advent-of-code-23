@@ -83,6 +83,7 @@ fn first_challenge(filename: &str) {
 fn second_challenge(filename: &str) {
     let lines = read_lines(filename);
     let mut valid_game_sum = 0;
+    let mut power_sum = 0;
     let red_max = 12;
     let green_max = 13;
     let blue_max = 14;
@@ -121,8 +122,10 @@ fn second_challenge(filename: &str) {
         if (red_high <= red_max) && (green_high <= green_max) && (blue_high <= blue_max) {
             valid_game_sum += game_id.parse::<i32>().unwrap();
         }
+        let power = red_high * green_high * blue_high;
+        power_sum += power;
     }
-    println!("{}", valid_game_sum);
+    print!("{}\n{}\n", valid_game_sum, power_sum);
 }
 
 fn main() {
