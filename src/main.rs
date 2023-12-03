@@ -17,7 +17,7 @@ macro_rules! word_to_num {
             "nine" => "9",
             _ => "",
         }
-    }
+    };
 }
 
 fn read_lines(filename: &str) -> Vec<String> {
@@ -80,15 +80,59 @@ fn first_challenge(filename: &str) {
     print!("{}", total);
 }
 
+fn second_challenge(filename: &str) {
+    let lines = read_lines(filename);
+    let mut valid_game_sum = 0;
+    let red_max = 12;
+    let green_max = 13;
+    let blue_max = 14;
+    for line in lines {
+        let parts = line.split(":").collect::<Vec<&str>>();
+        let game_id = parts[0].split(" ").collect::<Vec<&str>>()[1];
+        let draws = parts[1].split(";");
+        let mut red_high = 0;
+        let mut green_high = 0;
+        let mut blue_high = 0;
+        for draw in draws {
+            let colours = draw.split(", ");
+            for colour in colours {
+                let parts = colour.trim().split(" ").collect::<Vec<&str>>();
+                let count = parts[0].parse::<i32>().unwrap();
+                match parts[1] {
+                    "red" => {
+                        if count > red_high {
+                            red_high = count;
+                        }
+                    }
+                    "green" => {
+                        if count > green_high {
+                            green_high = count;
+                        }
+                    }
+                    "blue" => {
+                        if count > blue_high {
+                            blue_high = count;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        if (red_high <= red_max) && (green_high <= green_max) && (blue_high <= blue_max) {
+            valid_game_sum += game_id.parse::<i32>().unwrap();
+        }
+    }
+    println!("{}", valid_game_sum);
+}
+
 fn main() {
-    let x = word_to_num!("three");
-    print!("{}\n", x);
     let args: Vec<String> = env::args().collect();
     if args.len() > 2 {
         let challenge = &args[1];
         let filename = &args[2];
         match challenge.as_ref() {
             "1" => first_challenge(filename),
+            "2" => second_challenge(filename),
             _ => panic!("Invalid Challenge"),
         }
     } else {
